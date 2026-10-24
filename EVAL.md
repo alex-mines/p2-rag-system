@@ -45,7 +45,8 @@ A reply that is not each of 1 to 20 exactly once keeps the `hybrid` order for th
 Changes from the 13 lab: the schema also bounds every number to 1 through 20 (the lab's fixed only how many numbers come back); passages are cut at 2,000 characters where the lab used 600, because these sections are longer than the lab's articles; and the prompt names 30 CFR and states the brief's relevance rule, that a section is relevant when it states the requirement the query asks about, that the parallel sections in parts 56, 57, 75 and 77 are all relevant when the query names no kind of mine, and that a section that only cross-references the requirement is not.
 `search_chunks` reranks the top 20 chunks of `hybrid` the same way, for `p2 answer`.
 The practice run took 20 calls, about 16,400 input tokens per call.
-TODO: why I reranked `hybrid` and not `dense`, why 20 candidates and 2,000 characters, and why the prompt carries the relevance rule (your reasons, in your words).
+I reranked hybrid over dense because hybrid gives the reranker more options to work with since it retrieves texts from both dense and bm25.
+I kept it at 20 candidates and 2,000 characters as a reasonable cost since the text has to be passed to Claude for rerank while still providing enough options to find a good match. The prompt carries the relevance rule to ensure that sections that are retained are directly relevant as well as balance sections that are relevant to different portions.
 
 ### Practice queries (20)
 
@@ -117,7 +118,7 @@ Which differences are distinguishable from zero and which are not?
 What is the minimum detectable difference at 20 queries, and what does that say about any gap smaller than it?
 Which claim from lecture 12 or 13 did your numbers support, and which did they leave open?
 
-TODO: write what the practice-query intervals let you claim.
+Rerank is distinguishably better than the other three systems on MRR@10 and nDCG@10, however the comparisons between the other three systems are not significant enough to make any claims on. Based on the table for MDD the smallest gap falls between 0.2 and 0.4 for n=20. Bm25 performed as claimed, doing solid on the direct word matches but not finding any of the paraphrased matches. We cannot make any claim on hybrid as compared to bm25 and dense since the gap was below the threshold for significance. Rerank showed a significant improvement over the other three which supports the claim that it can improve the candidate list.
 
 ---
 
@@ -136,7 +137,9 @@ Then read three in-corpus answers that `uv run p2 verify` passed.
 For each one, open the cited chunk and say whether the quote really supports the claim next to it.
 The check proves a quote is a real piece of the chunk and cannot prove that it supports the claim, so this reading is the part only you can do.
 
-TODO: write your answer choices and your three-answer audit.
+all three claims were built using hybrid in order to save tokens that rerank would have cost.
+
+The quote for claim one is missing some of the context as the type of accident the 15 minute window is applicable for. The quotes for claim 3 and 5 respectively are both correct and relevant.
 
 ---
 
