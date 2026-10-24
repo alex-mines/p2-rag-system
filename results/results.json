@@ -794,7 +794,46 @@
       ]
     }
   },
-  "answers": {},
+  "answers": {
+    "shared/hybrid": {
+      "file": "answers/shared/hybrid.json",
+      "corpus": "shared",
+      "system": "hybrid",
+      "model": "sonnet",
+      "n_in": 8,
+      "n_out": 4,
+      "verified": 7,
+      "not_found_in": 1,
+      "declined_out": 4,
+      "claims": 11,
+      "claims_verified": 11,
+      "verified_share": 0.875,
+      "verified_wilson95": [
+        0.529112,
+        0.977583
+      ],
+      "not_found_in_share": 0.125,
+      "declined_out_share": 1.0,
+      "declined_out_wilson95": [
+        0.510109,
+        1.0
+      ],
+      "passed": {
+        "a01": true,
+        "a02": true,
+        "a03": true,
+        "a04": true,
+        "a05": true,
+        "a06": false,
+        "a07": true,
+        "a08": true,
+        "a09": true,
+        "a10": true,
+        "a11": true,
+        "a12": true
+      }
+    }
+  },
   "stretch": {
     "judge": {
       "files": {},
@@ -802,6 +841,16 @@
     },
     "cost": {
       "traces": [
+        {
+          "file": "traces/answers-hybrid.jsonl",
+          "system": "hybrid",
+          "spans": 12,
+          "calls": 12,
+          "saved": 2,
+          "input_tokens": 81624,
+          "output_tokens": 3074,
+          "seconds": 53.1942
+        },
         {
           "file": "traces/shared-practice-rerank.jsonl",
           "system": "rerank",
@@ -811,6 +860,16 @@
           "input_tokens": 328625,
           "output_tokens": 1932,
           "seconds": 86.6353
+        },
+        {
+          "file": "traces/shared-test-rerank.jsonl",
+          "system": "rerank",
+          "spans": 40,
+          "calls": 40,
+          "saved": 1,
+          "input_tokens": 706952,
+          "output_tokens": 4902,
+          "seconds": 236.3557
         }
       ],
       "run_pairs": [
@@ -956,19 +1015,37 @@
           "file": "traces/retrieval/shared-practice-bm25.jsonl",
           "system": "bm25",
           "spans": 20,
-          "seconds": 0.0488
+          "seconds": 0.095
         },
         {
           "file": "traces/retrieval/shared-practice-dense.jsonl",
           "system": "dense",
           "spans": 20,
-          "seconds": 0.2769
+          "seconds": 0.3747
         },
         {
           "file": "traces/retrieval/shared-practice-hybrid.jsonl",
           "system": "hybrid",
           "spans": 20,
-          "seconds": 0.3813
+          "seconds": 0.5492
+        },
+        {
+          "file": "traces/retrieval/shared-test-bm25.jsonl",
+          "system": "bm25",
+          "spans": 40,
+          "seconds": 0.2006
+        },
+        {
+          "file": "traces/retrieval/shared-test-dense.jsonl",
+          "system": "dense",
+          "spans": 40,
+          "seconds": 0.6342
+        },
+        {
+          "file": "traces/retrieval/shared-test-hybrid.jsonl",
+          "system": "hybrid",
+          "spans": 40,
+          "seconds": 1.0781
         }
       ]
     },

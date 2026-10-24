@@ -124,7 +124,9 @@ TODO: write what the practice-query intervals let you claim.
 ## 2. Stage 1 - cited answers on the 12 shared questions
 
 <!-- p2:begin answers -->
-_No answers files yet: run `uv run p2 answer --corpus shared --system NAME`, then `uv run p2 score`._
+| Label | System | Verified (in) | 95% interval | not_found (in) | Declined (out) | 95% interval | Quotes found |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| hybrid | hybrid | 7 of 8 (88%) | [0.529, 0.978] | 1 of 8 (12%) | 4 of 4 (100%) | [0.510, 1.000] | 11 of 11 |
 <!-- p2:end answers -->
 
 Which system answered, and why that one?
@@ -279,7 +281,9 @@ Every trace in traces/ that records a Claude call:
 
 | Trace | System | Spans | Claude calls | Saved | Input tokens | Output tokens | Seconds | Input per span | Output per span | Seconds per span |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| traces/answers-hybrid.jsonl | hybrid | 12 | 12 | 2 | 81,624 | 3,074 | 53.2 | 6,802 | 256 | 4.4 |
 | traces/shared-practice-rerank.jsonl | rerank | 20 | 20 | 2 | 328,625 | 1,932 | 86.6 | 16,431 | 97 | 4.3 |
+| traces/shared-test-rerank.jsonl | rerank | 40 | 40 | 1 | 706,952 | 4,902 | 236.4 | 17,674 | 123 | 5.9 |
 
 A span is one query of a run, one question of an answers file, or one claim of a judged file. A saved reply costs nothing now, so it counts the tokens and the seconds of the call that made it.
 
@@ -297,9 +301,12 @@ Systems that do not call Claude, from traces/retrieval/ on the machine that last
 
 | Trace | System | Queries | Seconds | Milliseconds per query |
 | --- | --- | ---: | ---: | ---: |
-| traces/retrieval/shared-practice-bm25.jsonl | bm25 | 20 | 0.05 | 2.4 |
-| traces/retrieval/shared-practice-dense.jsonl | dense | 20 | 0.28 | 13.8 |
-| traces/retrieval/shared-practice-hybrid.jsonl | hybrid | 20 | 0.38 | 19.1 |
+| traces/retrieval/shared-practice-bm25.jsonl | bm25 | 20 | 0.10 | 4.8 |
+| traces/retrieval/shared-practice-dense.jsonl | dense | 20 | 0.37 | 18.7 |
+| traces/retrieval/shared-practice-hybrid.jsonl | hybrid | 20 | 0.55 | 27.5 |
+| traces/retrieval/shared-test-bm25.jsonl | bm25 | 40 | 0.20 | 5.0 |
+| traces/retrieval/shared-test-dense.jsonl | dense | 40 | 0.63 | 15.9 |
+| traces/retrieval/shared-test-hybrid.jsonl | hybrid | 40 | 1.08 | 27.0 |
 <!-- p2:end stretch-cost -->
 
 ### The grep agent (option 5)
