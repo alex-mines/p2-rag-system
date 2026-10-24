@@ -285,7 +285,13 @@ Every trace in traces/ that records a Claude call:
 | Trace | System | Spans | Claude calls | Saved | Input tokens | Output tokens | Seconds | Input per span | Output per span | Seconds per span |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | traces/answers-hybrid.jsonl | hybrid | 12 | 12 | 2 | 81,624 | 3,074 | 53.2 | 6,802 | 256 | 4.4 |
+| traces/answers-hybrid.r1.jsonl | hybrid | 12 | 12 | 0 | 81,619 | 2,836 | 56.0 | 6,802 | 236 | 4.7 |
+| traces/answers-hybrid.r2.jsonl | hybrid | 12 | 12 | 0 | 81,619 | 3,319 | 56.8 | 6,802 | 277 | 4.7 |
+| traces/answers-hybrid.r3.jsonl | hybrid | 12 | 12 | 0 | 81,615 | 2,999 | 55.1 | 6,801 | 250 | 4.6 |
 | traces/shared-practice-rerank.jsonl | rerank | 20 | 20 | 2 | 328,625 | 1,932 | 86.6 | 16,431 | 97 | 4.3 |
+| traces/shared-practice-rerank.r1.jsonl | rerank | 20 | 20 | 0 | 358,219 | 2,221 | 92.6 | 17,911 | 111 | 4.6 |
+| traces/shared-practice-rerank.r2.jsonl | rerank | 20 | 20 | 0 | 321,326 | 2,322 | 91.9 | 16,066 | 116 | 4.6 |
+| traces/shared-practice-rerank.r3.jsonl | rerank | 20 | 20 | 0 | 353,892 | 2,241 | 91.7 | 17,695 | 112 | 4.6 |
 | traces/shared-test-rerank.jsonl | rerank | 40 | 40 | 1 | 706,952 | 4,902 | 236.4 | 17,674 | 123 | 5.9 |
 
 A span is one query of a run, one question of an answers file, or one claim of a judged file. A saved reply costs nothing now, so it counts the tokens and the seconds of the call that made it.
@@ -336,7 +342,37 @@ Write the five things here.
 Three runs of the reranker on the practice queries, and three answers files, with their run-to-run spread and Wilson intervals.
 
 <!-- p2:begin repeats -->
-_No repeated runs or answers files yet (598E: `p2 run ... --repeat 3` and `p2 answer ... --repeat 3`)._
+Repeated runs of rerank on shared/practice:
+
+| Run | Recall@10 | MRR@10 | nDCG@10 |
+| --- | ---: | ---: | ---: |
+| rerank.r1 | 0.758 | 0.800 | 0.757 |
+| rerank.r2 | 0.758 | 0.800 | 0.755 |
+| rerank.r3 | 0.758 | 0.800 | 0.754 |
+| range (max minus min) | 0.000 | 0.000 | 0.003 |
+
+| Comparison | Metric | Mean difference | 95% interval | Reading |
+| --- | --- | ---: | ---: | --- |
+| rerank.r1 minus hybrid | Recall@10 | +0.167 | [+0.058, +0.292] | rerank.r1 higher |
+| rerank.r2 minus hybrid | Recall@10 | +0.167 | [+0.058, +0.292] | rerank.r2 higher |
+| rerank.r3 minus hybrid | Recall@10 | +0.167 | [+0.058, +0.292] | rerank.r3 higher |
+| rerank.r1 minus hybrid | MRR@10 | +0.329 | [+0.164, +0.504] | rerank.r1 higher |
+| rerank.r2 minus hybrid | MRR@10 | +0.329 | [+0.164, +0.504] | rerank.r2 higher |
+| rerank.r3 minus hybrid | MRR@10 | +0.329 | [+0.164, +0.504] | rerank.r3 higher |
+| rerank.r1 minus hybrid | nDCG@10 | +0.314 | [+0.191, +0.440] | rerank.r1 higher |
+| rerank.r2 minus hybrid | nDCG@10 | +0.311 | [+0.188, +0.439] | rerank.r2 higher |
+| rerank.r3 minus hybrid | nDCG@10 | +0.311 | [+0.187, +0.438] | rerank.r3 higher |
+
+Repeated answers shared/hybrid:
+
+| File | Verified (in) | 95% interval | Declined (out) | 95% interval |
+| --- | ---: | ---: | ---: | ---: |
+| hybrid.r1 | 7 of 8 (88%) | [0.529, 0.978] | 4 of 4 (100%) | [0.510, 1.000] |
+| hybrid.r2 | 7 of 8 (88%) | [0.529, 0.978] | 4 of 4 (100%) | [0.510, 1.000] |
+| hybrid.r3 | 7 of 8 (88%) | [0.529, 0.978] | 4 of 4 (100%) | [0.510, 1.000] |
+| range (max minus min) | 0.000 |  | 0.000 |  |
+
+Each repeat answers the same questions, so the repeats are not independent trials and their counts are not pooled into one interval.
 <!-- p2:end repeats -->
 
 Does the reranker's gain over its first stage survive the run-to-run variation?
