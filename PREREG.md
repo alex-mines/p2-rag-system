@@ -24,7 +24,7 @@ One sentence, about your own corpus, naming two of your systems and a direction.
 For example: "On my corpus of Kubernetes documentation, `rerank` has a higher MRR@10 than `hybrid`, because the queries are paraphrases that a first-stage fusion ranks too low."
 It should be something you could be wrong about.
 
-TODO: your hypothesis.
+I hypothesize that rerank will outscore hybrid on MRR@10 because the corpus is on a narrow topic of rivers, thus there will likely be many possible matches found by hybrid, reranking these using claude will likely provide a significant improvement.
 
 ---
 
@@ -36,7 +36,7 @@ A difference of 0.02 is usually not worth a reranker's cost in time and tokens.
 In this course, choose a Δ of at least 0.15 unless you argue for a larger one, because a smaller gap takes more queries than one project can judge.
 Call your number Δ (delta).
 
-TODO: your metric and your Δ, with the reason.
+Use MRR@10 with a delta of .15, using recommended delta. A delta of .15 should be sufficient for determining a meaningful difference in performance.
 
 ---
 
@@ -65,7 +65,7 @@ After you score the own corpus, the minimum detectable difference that `uv run p
 It should come out at or below your Δ.
 If it does not, your queries varied more than your stage 1 sd suggested, and you will say so in the outcome.
 
-TODO: your sd, which pair it came from, your n, and the number of queries you will write (at least n).
+For rerank minus hybrid I observed a mean of +0.329, and sd 0.393. The n was ((1.96 + 0.84) × 0.393 / 0.15)² ≈ 54 queries so I will do 55 queries.
 
 ---
 
@@ -82,7 +82,7 @@ This is the default rule, and you can tighten it, but do not loosen it after you
 | around zero, with both ends inside plus or minus Δ | well-powered null: a difference as large as Δ is ruled out |
 | around zero, with an end beyond plus or minus Δ | inconclusive: the gold set could not settle it, and I say so |
 
-TODO: confirm or tighten this rule, and name the two systems and the metric once more.
+accept the default as is, see system and metric above
 
 ---
 
