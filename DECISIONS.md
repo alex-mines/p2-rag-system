@@ -26,7 +26,7 @@ Commit this answer before your first `uv run p2 score` on the own corpus.
 Git history then shows that the expectation came first, which is what lets it be wrong in a way that teaches you something.
 If you were surprised later, say so in prompt 4 or in EVAL.md; do not come back and rewrite this one.
 
-TODO: your answer to prompt 1.
+I chose this corpus because it is specific to Colorado and a topic that interests me. Because it is government data it is public domain so it works well for this project. I expect rerank to do the best because I expect this corpus to have multiple matches for each query on hybrid thus reranking them should show improvement. I expect dense to do the worst because there will be a lot of context overlap due to the narrow scope of the corpus.
 
 ---
 
