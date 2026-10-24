@@ -25,26 +25,87 @@ The minimum detectable difference is the smallest gap this many queries could re
 
 For each of `dense`, `hybrid` and `rerank`, one or two sentences: the embedding model, how documents were chunked, what was fused and how, how many candidates the reranker saw, and anything you changed from the 12 and 13 lab code.
 
-TODO: describe your three systems.
+**dense.** Embedding model: `BAAI/bge-small-en-v1.5` through fastembed (`p2.embed.load`), no query instruction prefix.
+Documents are split into 300-word chunks with 50 words of overlap (`[chunking]` in `p2.toml`), each chunk is embedded once and the vectors are cached, and the query is embedded the same way.
+Chunks are ranked by cosine similarity with an exact numpy search, and a document scores its best chunk.
+Changes from the 12 lab: the lab embedded whole articles and this embeds chunks, and the vector cache is keyed by chunk text.
+bge-small was selected over potion-retrieval because while bge is slower and has a higher cost it includes the context around a word so a word's vector changes with the words around it
+
+**hybrid.** Reciprocal rank fusion (RRF) of `bm25` and `dense`: a document scores the sum of 1 / (60 + rank) over its rank in each of the two systems, ranks counted from 1, and documents are ordered by that score with ties in document id order.
+Each system is asked for a ranking of every document in the corpus, not its top 10, so a document ranked 11th by both can still reach the fused top 10.
+Both parts are the same `bm25` and `dense` as above, so the documents are scored from the same 300-word chunks, and the fusion happens at the document level.
+Changes from the 13 lab: the lab fused whole-article rankings, and here the inputs are chunk-based document rankings, with `bm25` using the `codes` tokenizer from `p2.toml`; `k = 60` and the fusion formula are the lab's.
+The system also has a `search_chunks` that fuses the chunk rankings the same way, for `p2 answer`. 
+Bm25 and dense were fused because they work well together to cover for eachothers' weaknesses.
+
+**rerank.** A listwise reranker over the top 20 documents of `hybrid`: one `claude -p` call per query on Sonnet (`[claude]` in `p2.toml`) with no tools, so Claude sees only the prompt.
+The 20 candidates are shown as numbered passages, each document cut to its first 2,000 characters, and Claude must reply with all 20 numbers, best first, in a JSON object forced by a schema.
+Documents ranked 21 and below keep their `hybrid` order underneath the 20, so the reranker can only reorder its candidates and cannot bring back a relevant document that `hybrid` ranked below 20.
+A reply that is not each of 1 to 20 exactly once keeps the `hybrid` order for that query and prints a warning; the replies are cached, and the tokens and seconds of every call are in `traces/shared-practice-rerank.jsonl`.
+Changes from the 13 lab: the schema also bounds every number to 1 through 20 (the lab's fixed only how many numbers come back); passages are cut at 2,000 characters where the lab used 600, because these sections are longer than the lab's articles; and the prompt names 30 CFR and states the brief's relevance rule, that a section is relevant when it states the requirement the query asks about, that the parallel sections in parts 56, 57, 75 and 77 are all relevant when the query names no kind of mine, and that a section that only cross-references the requirement is not.
+`search_chunks` reranks the top 20 chunks of `hybrid` the same way, for `p2 answer`.
+The practice run took 20 calls, about 16,400 input tokens per call.
+TODO: why I reranked `hybrid` and not `dense`, why 20 candidates and 2,000 characters, and why the prompt carries the relevance rule (your reasons, in your words).
 
 ### Practice queries (20)
 
 Scores per system.
 
 <!-- p2:begin shared-practice -->
-_No scored runs here yet: run `uv run p2 run --corpus shared --queries practice --system bm25` (or `--all`), then `uv run p2 score`._
+| System | Recall@10 | MRR@10 | nDCG@10 |
+| --- | ---: | ---: | ---: |
+| bm25 | 0.625 | 0.507 | 0.518 |
+| dense | 0.558 | 0.562 | 0.480 |
+| hybrid | 0.592 | 0.471 | 0.444 |
+| rerank | 0.758 | 0.800 | 0.763 |
+
+20 judged queries; nDCG uses binary labels; a random ranking of the 2,484 documents would get recall@10 near 0.004.
 <!-- p2:end shared-practice -->
 
 The same scores per query class.
 
 <!-- p2:begin shared-practice-classes -->
-_No scored runs here yet: run `uv run p2 run --corpus shared --queries practice --system bm25` (or `--all`), then `uv run p2 score`._
+| System | Metric | identifier (n=7) | paraphrase (n=7) | mixed (n=6) |
+| --- | --- | ---: | ---: | ---: |
+| bm25 | Recall@10 | 1.000 | 0.000 | 0.917 |
+| bm25 | MRR@10 | 0.810 | 0.000 | 0.746 |
+| bm25 | nDCG@10 | 0.857 | 0.000 | 0.728 |
+| dense | Recall@10 | 0.214 | 0.595 | 0.917 |
+| dense | MRR@10 | 0.333 | 0.714 | 0.653 |
+| dense | nDCG@10 | 0.211 | 0.593 | 0.661 |
+| hybrid | Recall@10 | 0.500 | 0.405 | 0.917 |
+| hybrid | MRR@10 | 0.514 | 0.154 | 0.792 |
+| hybrid | nDCG@10 | 0.397 | 0.203 | 0.779 |
+| rerank | Recall@10 | 0.714 | 0.595 | 1.000 |
+| rerank | MRR@10 | 0.714 | 0.714 | 1.000 |
+| rerank | nDCG@10 | 0.697 | 0.626 | 1.000 |
 <!-- p2:end shared-practice-classes -->
 
 Differences between every pair of systems, each with its paired interval and the minimum detectable difference.
 
 <!-- p2:begin shared-practice-pairs -->
-_No scored runs here yet: run `uv run p2 run --corpus shared --queries practice --system bm25` (or `--all`), then `uv run p2 score`._
+| Comparison | Metric | Mean difference | 95% interval | MDD | Reading |
+| --- | --- | ---: | ---: | ---: | --- |
+| dense minus bm25 | Recall@10 | -0.067 | [-0.350, +0.225] | 0.415 | not distinguishable |
+| dense minus bm25 | MRR@10 | +0.055 | [-0.225, +0.343] | 0.412 | not distinguishable |
+| dense minus bm25 | nDCG@10 | -0.039 | [-0.302, +0.231] | 0.385 | not distinguishable |
+| hybrid minus bm25 | Recall@10 | -0.033 | [-0.250, +0.192] | 0.324 | not distinguishable |
+| hybrid minus bm25 | MRR@10 | -0.036 | [-0.178, +0.084] | 0.193 | not distinguishable |
+| hybrid minus bm25 | nDCG@10 | -0.075 | [-0.238, +0.075] | 0.228 | not distinguishable |
+| hybrid minus dense | Recall@10 | +0.033 | [-0.125, +0.192] | 0.231 | not distinguishable |
+| hybrid minus dense | MRR@10 | -0.091 | [-0.305, +0.110] | 0.300 | not distinguishable |
+| hybrid minus dense | nDCG@10 | -0.036 | [-0.199, +0.113] | 0.227 | not distinguishable |
+| rerank minus bm25 | Recall@10 | +0.133 | [-0.100, +0.358] | 0.340 | not distinguishable |
+| rerank minus bm25 | MRR@10 | +0.293 | [+0.043, +0.533] | 0.353 | rerank higher |
+| rerank minus bm25 | nDCG@10 | +0.244 | [+0.015, +0.461] | 0.326 | rerank higher |
+| rerank minus dense | Recall@10 | +0.200 | [+0.050, +0.367] | 0.224 | rerank higher |
+| rerank minus dense | MRR@10 | +0.237 | [+0.083, +0.408] | 0.239 | rerank higher |
+| rerank minus dense | nDCG@10 | +0.283 | [+0.148, +0.430] | 0.207 | rerank higher |
+| rerank minus hybrid | Recall@10 | +0.167 | [+0.058, +0.292] | 0.166 | rerank higher |
+| rerank minus hybrid | MRR@10 | +0.329 | [+0.164, +0.504] | 0.246 | rerank higher |
+| rerank minus hybrid | nDCG@10 | +0.319 | [+0.196, +0.446] | 0.180 | rerank higher |
+
+The interval is a paired bootstrap (10,000 resamples of the queries); MDD is the smallest difference this many queries detect 80% of the time.
 <!-- p2:end shared-practice-pairs -->
 
 The 40 test queries have no answer key in this repo.
@@ -214,7 +275,31 @@ _No judged answers yet (stretch option 2): `uv run p2 judge answers/shared/LABEL
 The Claude calls, tokens and seconds in every trace you committed, and what a cheaper system or answers file saves against what it loses.
 
 <!-- p2:begin stretch-cost -->
-_No Claude traces yet: a run of a system that calls Claude, `p2 answer` and `p2 judge` write them in traces/, and then `uv run p2 score` fills this table._
+Every trace in traces/ that records a Claude call:
+
+| Trace | System | Spans | Claude calls | Saved | Input tokens | Output tokens | Seconds | Input per span | Output per span | Seconds per span |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| traces/shared-practice-rerank.jsonl | rerank | 20 | 20 | 2 | 328,625 | 1,932 | 86.6 | 16,431 | 97 | 4.3 |
+
+A span is one query of a run, one question of an answers file, or one claim of a judged file. A saved reply costs nothing now, so it counts the tokens and the seconds of the call that made it.
+
+Every pair of systems on the same queries where at least one calls Claude, the one with fewer Claude input tokens per query first:
+
+| Cheaper minus dearer | Queries | MRR@10 difference | 95% interval | Input tokens saved per query | Seconds saved per query | Reading |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| shared practice: bm25 minus rerank | 20 | -0.293 | [-0.533, -0.043] | 16,431 | 4.3 | rerank higher |
+| shared practice: dense minus rerank | 20 | -0.237 | [-0.408, -0.083] | 16,431 | 4.3 | rerank higher |
+| shared practice: hybrid minus rerank | 20 | -0.329 | [-0.504, -0.164] | 16,431 | 4.3 | rerank higher |
+
+The difference is the cheaper system's score minus the dearer one's, with its paired interval; the savings count Claude calls only, so a system that makes none saves all of the other's.
+
+Systems that do not call Claude, from traces/retrieval/ on the machine that last ran `p2 score` (git ignores that folder, so `p2 check` does not compare this part):
+
+| Trace | System | Queries | Seconds | Milliseconds per query |
+| --- | --- | ---: | ---: | ---: |
+| traces/retrieval/shared-practice-bm25.jsonl | bm25 | 20 | 0.05 | 2.4 |
+| traces/retrieval/shared-practice-dense.jsonl | dense | 20 | 0.28 | 13.8 |
+| traces/retrieval/shared-practice-hybrid.jsonl | hybrid | 20 | 0.38 | 19.1 |
 <!-- p2:end stretch-cost -->
 
 ### The grep agent (option 5)
