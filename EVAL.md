@@ -273,6 +273,8 @@ Change one thing and keep everything else the same.
 Write your hypothesis here before you run it, in one sentence with a direction: "I expect X to raise MRR@10 on my corpus because Y."
 The run file for it lives in `runs/own/ablation/`.
 
+I hypothesize that raising dense's chunk size from 300 to 600 words (overlap 100) will raise MRR@10 on my corpus above dense's 0.791, because increasing the context the model can see could reveal more necessary context to connect the paraphrased queries to the real answer. Even though the model truncates at 512 tokens this allows dense to take advantage of the full limit when it can.
+
 <!-- p2:begin own-ablation -->
 _No ablation runs yet: `uv run p2 run --corpus own --system NAME --ablation` writes one to runs/own/ablation/, then `uv run p2 score` fills this table._
 <!-- p2:end own-ablation -->
