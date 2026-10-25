@@ -175,6 +175,7 @@ Scores per system on your gold set.
 | dense | 0.923 | 0.791 | 0.785 |
 | hybrid | 0.947 | 0.820 | 0.814 |
 | rerank | 0.954 | 0.885 | 0.861 |
+| ablation/dense_chunks | 0.878 | 0.744 | 0.739 |
 
 55 judged queries; nDCG uses binary labels; a random ranking of the 209 documents would get recall@10 near 0.048.
 <!-- p2:end own -->
@@ -196,6 +197,9 @@ The same scores per query class.
 | rerank | Recall@10 | 0.965 | 0.961 | 0.935 |
 | rerank | MRR@10 | 0.934 | 0.841 | 0.877 |
 | rerank | nDCG@10 | 0.887 | 0.837 | 0.857 |
+| ablation/dense_chunks | Recall@10 | 0.982 | 0.885 | 0.759 |
+| ablation/dense_chunks | MRR@10 | 0.833 | 0.731 | 0.661 |
+| ablation/dense_chunks | nDCG@10 | 0.862 | 0.732 | 0.618 |
 <!-- p2:end own-classes -->
 
 The same scores for the queries you wrote yourself (`hand`) and the ones a model drafted (`claude`), with the difference between the two groups and its interval.
@@ -216,6 +220,9 @@ Once both groups have queries, the table also says whether `bm25`'s lead over `d
 | rerank | Recall@10 | 1.000 | 0.944 | +0.056 | [+0.016, +0.104] | hand higher |
 | rerank | MRR@10 | 0.900 | 0.882 | +0.018 | [-0.137, +0.154] | not distinguishable |
 | rerank | nDCG@10 | 0.909 | 0.850 | +0.059 | [-0.057, +0.169] | not distinguishable |
+| ablation/dense_chunks | Recall@10 | 0.900 | 0.873 | +0.027 | [-0.128, +0.159] | not distinguishable |
+| ablation/dense_chunks | MRR@10 | 0.698 | 0.754 | -0.056 | [-0.275, +0.159] | not distinguishable |
+| ablation/dense_chunks | nDCG@10 | 0.727 | 0.742 | -0.015 | [-0.195, +0.155] | not distinguishable |
 
 The hand and claude queries are different queries, so the interval of hand minus claude comes from resampling the queries within each group (10,000 times), not from pairing them.
 
@@ -255,6 +262,18 @@ Differences between every pair of systems.
 | rerank minus hybrid | Recall@10 | +0.007 | [-0.032, +0.046] | 0.056 | not distinguishable |
 | rerank minus hybrid | MRR@10 | +0.065 | [-0.026, +0.158] | 0.130 | not distinguishable |
 | rerank minus hybrid | nDCG@10 | +0.046 | [-0.019, +0.113] | 0.095 | not distinguishable |
+| ablation/dense_chunks minus bm25 | Recall@10 | -0.022 | [-0.112, +0.075] | 0.135 | not distinguishable |
+| ablation/dense_chunks minus bm25 | MRR@10 | -0.0003 | [-0.120, +0.121] | 0.174 | not distinguishable |
+| ablation/dense_chunks minus bm25 | nDCG@10 | -0.034 | [-0.126, +0.059] | 0.132 | not distinguishable |
+| ablation/dense_chunks minus dense | Recall@10 | -0.045 | [-0.094, -0.009] | 0.062 | dense higher |
+| ablation/dense_chunks minus dense | MRR@10 | -0.047 | [-0.109, +0.012] | 0.087 | not distinguishable |
+| ablation/dense_chunks minus dense | nDCG@10 | -0.046 | [-0.087, -0.008] | 0.056 | dense higher |
+| ablation/dense_chunks minus hybrid | Recall@10 | -0.070 | [-0.124, -0.024] | 0.071 | hybrid higher |
+| ablation/dense_chunks minus hybrid | MRR@10 | -0.077 | [-0.170, +0.017] | 0.134 | not distinguishable |
+| ablation/dense_chunks minus hybrid | nDCG@10 | -0.075 | [-0.139, -0.014] | 0.090 | hybrid higher |
+| ablation/dense_chunks minus rerank | Recall@10 | -0.076 | [-0.140, -0.016] | 0.090 | rerank higher |
+| ablation/dense_chunks minus rerank | MRR@10 | -0.141 | [-0.239, -0.041] | 0.142 | rerank higher |
+| ablation/dense_chunks minus rerank | nDCG@10 | -0.121 | [-0.194, -0.048] | 0.106 | rerank higher |
 
 The interval is a paired bootstrap (10,000 resamples of the queries); MDD is the smallest difference this many queries detect 80% of the time.
 <!-- p2:end own-pairs -->
@@ -276,14 +295,51 @@ The run file for it lives in `runs/own/ablation/`.
 I hypothesize that raising dense's chunk size from 300 to 600 words (overlap 100) will raise MRR@10 on my corpus above dense's 0.791, because increasing the context the model can see could reveal more necessary context to connect the paraphrased queries to the real answer. Even though the model truncates at 512 tokens this allows dense to take advantage of the full limit when it can.
 
 <!-- p2:begin own-ablation -->
-_No ablation runs yet: `uv run p2 run --corpus own --system NAME --ablation` writes one to runs/own/ablation/, then `uv run p2 score` fills this table._
+| Comparison | Metric | Mean difference | 95% interval | MDD | Reading |
+| --- | --- | ---: | ---: | ---: | --- |
+| ablation/dense_chunks minus bm25 | Recall@10 | -0.022 | [-0.112, +0.075] | 0.135 | not distinguishable |
+| ablation/dense_chunks minus bm25 | MRR@10 | -0.0003 | [-0.120, +0.121] | 0.174 | not distinguishable |
+| ablation/dense_chunks minus bm25 | nDCG@10 | -0.034 | [-0.126, +0.059] | 0.132 | not distinguishable |
+| ablation/dense_chunks minus dense | Recall@10 | -0.045 | [-0.094, -0.009] | 0.062 | dense higher |
+| ablation/dense_chunks minus dense | MRR@10 | -0.047 | [-0.109, +0.012] | 0.087 | not distinguishable |
+| ablation/dense_chunks minus dense | nDCG@10 | -0.046 | [-0.087, -0.008] | 0.056 | dense higher |
+| ablation/dense_chunks minus hybrid | Recall@10 | -0.070 | [-0.124, -0.024] | 0.071 | hybrid higher |
+| ablation/dense_chunks minus hybrid | MRR@10 | -0.077 | [-0.170, +0.017] | 0.134 | not distinguishable |
+| ablation/dense_chunks minus hybrid | nDCG@10 | -0.075 | [-0.139, -0.014] | 0.090 | hybrid higher |
+| ablation/dense_chunks minus rerank | Recall@10 | -0.076 | [-0.140, -0.016] | 0.090 | rerank higher |
+| ablation/dense_chunks minus rerank | MRR@10 | -0.141 | [-0.239, -0.041] | 0.142 | rerank higher |
+| ablation/dense_chunks minus rerank | nDCG@10 | -0.121 | [-0.194, -0.048] | 0.106 | rerank higher |
+
+The interval is a paired bootstrap (10,000 resamples of the queries); MDD is the smallest difference this many queries detect 80% of the time.
 <!-- p2:end own-ablation -->
 
 The queries your ablation helped and hurt, against the system it varies, by reciprocal rank.
 `p2 score` finds that system from a line such as `BASE = "bm25"` in your variant's file, or else from its name: `bm25_lab` varies `bm25`.
 
 <!-- p2:begin own-ablation-queries -->
-_No ablation runs yet: `uv run p2 run --corpus own --system NAME --ablation` writes one to runs/own/ablation/, then `uv run p2 score` fills this table._
+ablation/dense_chunks against dense (BASE = "dense" in p2/retrievers/dense_chunks.py): it helped 7 queries, hurt 10 and left 38 unchanged.
+
+| Query | Class | Origin | dense RR | ablation/dense_chunks RR | Change | Effect |
+| --- | --- | --- | ---: | ---: | ---: | --- |
+| c17 | substance | claude | 0.500 | 1.000 | +0.500 | helped |
+| c19 | substance | claude | 0.500 | 1.000 | +0.500 | helped |
+| c36 | paraphrase | claude | 0.500 | 1.000 | +0.500 | helped |
+| c37 | paraphrase | claude | 0.167 | 0.333 | +0.167 | helped |
+| c39 | paraphrase | claude | 0.125 | 0.250 | +0.125 | helped |
+| c15 | substance | claude | 0.250 | 0.333 | +0.083 | helped |
+| h03 | paraphrase | hand | 0.111 | 0.143 | +0.032 | helped |
+| h05 | name | hand | 1.000 | 0.333 | -0.667 | hurt |
+| c10 | name | claude | 1.000 | 0.500 | -0.500 | hurt |
+| c23 | substance | claude | 1.000 | 0.500 | -0.500 | hurt |
+| c24 | substance | claude | 1.000 | 0.500 | -0.500 | hurt |
+| c38 | paraphrase | claude | 1.000 | 0.500 | -0.500 | hurt |
+| h06 | substance | hand | 1.000 | 0.500 | -0.500 | hurt |
+| h10 | name | hand | 1.000 | 0.500 | -0.500 | hurt |
+| c41 | paraphrase | claude | 0.333 | 0.000 | -0.333 | hurt |
+| c42 | paraphrase | claude | 0.500 | 0.167 | -0.333 | hurt |
+| c09 | name | claude | 0.500 | 0.333 | -0.167 | hurt |
+
+RR is the reciprocal rank of the first relevant document in the top 10 (0 when none is there), the per-query value behind MRR@10; the queries at the top of each list are the ones to read.
 <!-- p2:end own-ablation-queries -->
 
 What did you change, what happened, and does the interval support the claim you want to make?
@@ -384,6 +440,7 @@ Systems that do not call Claude, from traces/retrieval/ on the machine that last
 
 | Trace | System | Queries | Seconds | Milliseconds per query |
 | --- | --- | ---: | ---: | ---: |
+| traces/retrieval/own-own-ablation-dense_chunks.jsonl | dense_chunks | 55 | 0.75 | 13.7 |
 | traces/retrieval/own-own-bm25.jsonl | bm25 | 55 | 0.14 | 2.6 |
 | traces/retrieval/own-own-dense.jsonl | dense | 55 | 0.87 | 15.8 |
 | traces/retrieval/own-own-hybrid.jsonl | hybrid | 55 | 1.29 | 23.4 |
