@@ -41,7 +41,7 @@ If you rejected the alternative without measuring it, say why that was a fair ca
 "There was no alternative" is not an answer.
 Find the fork.
 
-TODO: your answer to prompt 2.
+I chose to increase the character limit from 2000 to 6000 characters in order to give a more robust test of the reranker. This will have a higher cost of tokens but it is worth testing. It improves from 13% but doesn’t take too much of the document. I gave up the cheaper cost and potentially more accurate response of the best chunk.
 
 ---
 

@@ -22,6 +22,7 @@ NEEDS_CLAUDE = True
 FIRST_STAGE = "hybrid"
 CANDIDATES = 20
 PASSAGE_CHARS = 2000
+OWN_PASSAGE_CHARS = 6000  # own corpus: documents are 5-page parts of about 15,000 characters
 
 SCHEMA = {
     "type": "object",
@@ -45,13 +46,25 @@ Query: {query}
 
 {passages}"""
 
+# The own corpus (USGS reports on Colorado water): the relevance rule is the student's, also used for the gold set.
+OWN_PROMPT = """Below are {n} passages from U.S. Geological Survey reports on Colorado water resources, numbered 1 to {n}, and a search query.
+Relevance rule: the relevant section should give a reader all of the supporting evidence needed to justify the claim made in answer to the question posed. The reader should be able to look at a portion of the text and say yes this connects to my question directly.
+Order the passages from the most relevant to the least relevant.
+Reply with all {n} passage numbers, each exactly once, best first.
 
-def rerank(cfg, query: str, candidates: list[tuple[str, str]]) -> list[int]:
+Query: {query}
+
+{passages}"""
+
+
+def rerank(cfg, query: str, candidates: list[tuple[str, str]], corpus_name: str = "shared") -> list[int]:
     """Indexes into `candidates` (id, text), best first; the original order if the reply is unusable."""
     n = len(candidates)
     keep = list(range(n))
-    passages = "\n\n".join(f"[{i}] {text[:PASSAGE_CHARS]}" for i, (_id, text) in enumerate(candidates, 1))
-    reply = claude.call(PROMPT.format(n=n, query=query, passages=passages), schema(n), model=cfg.model, cache_dir=claude.cache_folder(cfg))
+    chars = OWN_PASSAGE_CHARS if corpus_name == "own" else PASSAGE_CHARS
+    passages = "\n\n".join(f"[{i}] {text[:chars]}" for i, (_id, text) in enumerate(candidates, 1))
+    prompt = OWN_PROMPT if corpus_name == "own" else PROMPT
+    reply = claude.call(prompt.format(n=n, query=query, passages=passages), schema(n), model=cfg.model, cache_dir=claude.cache_folder(cfg))
     if reply.error:
         print(f"rerank: {reply.error}; kept the first-stage order for: {query[:60]}", file=sys.stderr)
         return keep
@@ -88,14 +101,14 @@ class Rerank:
         first = [d for d, _ in self.first.search(text, max(k, CANDIDATES))]
         top, rest = first[:CANDIDATES], first[CANDIDATES:]
         if top:
-            top = [top[i] for i in rerank(self.cfg, text, [(d, self.corpus.docs[d].text) for d in top])]
+            top = [top[i] for i in rerank(self.cfg, text, [(d, self.corpus.docs[d].text) for d in top], self.corpus.name)]
         return lift(top, rest)[:k]
 
     def search_chunks(self, text: str, k: int) -> list[tuple[str, float]]:
         first = [c for c, _ in self.first.search_chunks(text, max(k, CANDIDATES))]
         top, rest = first[:CANDIDATES], first[CANDIDATES:]
         if top:
-            top = [top[i] for i in rerank(self.cfg, text, [(c, self.chunk_text[c]) for c in top])]
+            top = [top[i] for i in rerank(self.cfg, text, [(c, self.chunk_text[c]) for c in top], self.corpus.name)]
         return lift(top, rest)[:k]
 
 
