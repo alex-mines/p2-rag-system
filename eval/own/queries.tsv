@@ -2,3 +2,58 @@
 # origin is hand when you wrote the query yourself and claude when a model drafted it; at least 10 must be hand.
 # class is a word you choose, for example identifier, paraphrase or mixed as in the shared sets; scores are reported per class.
 # Lines that start with # are comments, so delete these lines or keep them, as you like.
+h01	substance	what river basin is known to contribute dissolved selenium to recipient streams?	hand
+h02	name	what years of biological data for the South Platte River Basin were first made available online?	hand
+h03	paraphrase	what acronym is used for how much water is available each month?	hand
+h04	substance	what hypotheses were tested for controlling algae?	hand
+h05	name	about how many people rely on the Colorado river for drinking?	hand
+h06	substance	what was the greatest source of zinc in Leavenworth Creek?	hand
+h07	paraphrase	How should issues with missing water data be addressed?	hand
+h08	name	how many acres of farmland does the Arkansas River provide water for?	hand
+h09	name	where does the Eagle River flow?	hand
+h10	name	what county is snake river in?	hand
+c01	name	How many monitoring wells were installed across Fountain Creek near Pueblo?	claude
+c02	name	How many pesticides were detected in the Dillon Reservoir sediment samples?	claude
+c03	name	When were the monitoring wells on the east side of the Uncompahgre River completed?	claude
+c04	name	How large was the area burned by the 2013 West Fork Fire Complex at the headwaters of the Rio Grande?	claude
+c05	name	How many subbasins in the Gunnison and Colorado River Basins were used to relate salt and selenium loads to geospatial variables?	claude
+c06	name	Since when have streamgages in the Colorado River Basin been collecting data?	claude
+c07	name	What seasonal pattern of gains and losses was found on Chalk Creek?	claude
+c08	name	How did nitrate concentrations change in the Upper Black Squirrel Creek Basin alluvial aquifer between the 2013 and 2018-20 studies?	claude
+c09	name	What was the net groundwater flow from adjacent alluvial aquifers into the Upper Big Sandy alluvial aquifer in 2016?	claude
+c10	name	How much did nitrate plus nitrite concentrations vary over a day at the downstream Eagle River site?	claude
+c11	name	Why were conditions acidic in the upper Animas River Basin near Silverton?	claude
+c12	name	In which direction does groundwater flow along Fountain Creek in the center of the Fountain Creek alluvial aquifer?	claude
+c13	name	What dissolved uranium concentration was measured in the South Platte River in Colorado in an earlier study?	claude
+c14	substance	Which endangered fish species are most at risk from selenium toxicity?	claude
+c15	substance	How much does salt damage cost per year in the Colorado River Basin?	claude
+c16	substance	What is the EPA maximum contaminant level for dissolved uranium in drinking water?	claude
+c17	substance	What range of selenium loads was measured in Fountain Creek?	claude
+c18	substance	In which months were dissolved solids concentrations highest in southwestern Colorado streams?	claude
+c19	substance	Where were the highest aluminum concentrations measured in southwestern Colorado?	claude
+c20	substance	Which DDT breakdown products were found in the Dillon Reservoir core?	claude
+c21	substance	What were typical dissolved oxygen concentrations in streams of southwestern Colorado?	claude
+c22	substance	How much did filtered orthophosphate vary over a day at the downstream Eagle River site?	claude
+c23	substance	What was the greatest source of lead load to Leavenworth Creek?	claude
+c24	substance	Does groundwater or surface water have greater concentrations of selenium and uranium in Fountain Creek?	claude
+c25	substance	What is the predominant source of uranium in the South Platte River?	claude
+c26	substance	What was the range of median total recoverable iron concentrations in southwestern Colorado?	claude
+c27	substance	How did total combustion PAH concentrations change with depth in the Dillon Reservoir core?	claude
+c28	substance	How does saline irrigation water affect crop yields?	claude
+c29	substance	Did nitrate concentrations change significantly in the southern two-thirds of the Upper Black Squirrel Creek alluvial aquifer between 2013 and 2018-20?	claude
+c30	paraphrase	How can temperature be measured continuously over kilometers of cable?	claude
+c31	paraphrase	How long after a wildfire does the risk of flash floods and debris slurries remain highest?	claude
+c32	paraphrase	What share of the burned area was moderately or severely scorched?	claude
+c33	paraphrase	At what time of day were nutrient concentrations in the stream at their highest?	claude
+c34	paraphrase	Does water move up from the rock layers beneath into the shallow aquifer?	claude
+c35	paraphrase	When does a creek lose water to the ground instead of gaining it?	claude
+c36	paraphrase	Which measurable characteristics predict whether a dry channel is stable?	claude
+c37	paraphrase	How many cross sections were physically visited in the field?	claude
+c38	paraphrase	What causes year-to-year water-level swings in the aquifer where many wells are pumped?	claude
+c39	paraphrase	Why can't gages be put on every small stream flowing into a river?	claude
+c40	paraphrase	What measurements of irrigation ditches are missing?	claude
+c41	paraphrase	Which sample covered the entire history of mud settling in the reservoir?	claude
+c42	paraphrase	Are naturally high levels of the radioactive metal at the cleanup site common in nearby shallow wells?	claude
+c43	paraphrase	What are the statistical load models meant to help managers decide?	claude
+c44	paraphrase	When was the federal agency that measures rivers created?	claude
+c45	paraphrase	How accurate was the model that classified channel stability on test data?	claude
