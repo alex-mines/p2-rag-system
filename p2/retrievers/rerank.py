@@ -22,7 +22,7 @@ NEEDS_CLAUDE = True
 FIRST_STAGE = "hybrid"
 CANDIDATES = 20
 PASSAGE_CHARS = 2000
-OWN_PASSAGE_CHARS = 6000  # own corpus: documents are 5-page parts of about 15,000 characters
+OWN_PASSAGE_CHARS = 6000  # own corpus: documents are 5-page parts of about 15,000 characters. Known flaw: for 8 of 55 queries (h09, h10, c12, c13, c17, c27, c38, c41) the answer sits past character 6,000 in every relevant part, so the reranker cannot see it; 6 of the 7 queries where rerank ranks below hybrid are among them. A 12,000 character trial on those 8 raised their MRR@10 from 0.480 to 0.812 (scratch run, not committed).
 
 SCHEMA = {
     "type": "object",
