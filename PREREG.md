@@ -93,7 +93,7 @@ Which row of the table in section 4 is it?
 Did your gold set reach the size section 3 asked for, and what was the minimum detectable difference that `uv run p2 score` printed?
 What would you do next, and what would you want a reader to take from this?
 
-TODO: your outcome.
+The interval was around zero, with an end beyond plus or minus delta with a 95% interval of [-0.026, +0.158]. The results can be found in the "rerank minus hybrid" row of the table. The gold set did reach the size section 3 asked for with 55 queries, the requested was 54. The mdd for this row was 0.13 which was below the delta. In order to detect a difference of this size I would need to run several times as many queries, which would hopefully give a distinguishable difference. The biggest takeaway is that the observed difference was an improvement but not enough of one to conclusively determine which was superior in practice.
 
 ---
 
