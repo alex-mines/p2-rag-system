@@ -151,7 +151,7 @@ What is it, where did it come from, how many documents and how many megabytes, a
 Name the one or two documents you were least sure about and what you decided.
 Say which of the allowed sources in the brief it comes from.
 
-TODO: describe your corpus and its license basis.
+The corpus is USGS reports on Colrado water that were split into 5-page parts from 30 original reports. The processed text from the documents ended up as about 3.0 MB, much smaller than the original PDFs. These documents are all sourced from pubs.usgs.gov sites and I found it by researching potential datasources in the public domain with claude to find something that fit this project in the scope of Colorado specifc datasources that I gave it. All of the sources in the corpus are us-gov-public-domain and thus are able to be published. The documents that I was concerned about fall into two categories rather than two specific documents, the first category was a disclaimer on the license claiming that there may be copyrighted figures used in the reports, these I flagged as okay since only text is saved and used, the other category was some documents that were more fringe-relevant to the Colorado area and I elected to keep as if they were ranked they provide a good indicator of problematic rankings.
 
 ### The gold set
 
