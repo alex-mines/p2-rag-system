@@ -282,7 +282,7 @@ Which differences are distinguishable and which are not, at your gold-set size?
 Do the `hand` queries and the `claude` queries tell the same story?
 Did your prediction in `DECISIONS.md` prompt 1 hold?
 
-TODO: write what your own-corpus intervals let you claim.
+Using my gold-set and MRR@10 as the metric I can claim that hybrid outperforms bm25, rerank outperforms bm25, and rerank outperforms the ablation dense. For the large majority of systems and metrics hand and claude queries were not distinguishable with the exception of the hybrid and rerank performing better on Recall@10 on the hand queries. My prediction in DECISIONS.md prompt 1 did not hold, while rerank scored the best it was not distinguishable from hybrid, and I observed that dense outperformed bm25 but those two were not distinguishable either.
 
 ---
 
