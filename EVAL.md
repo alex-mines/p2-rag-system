@@ -377,7 +377,27 @@ Did the winner change between the shared corpus and yours?
 Why, or why not: what is different about the two collections (document length, vocabulary, identifiers, near-duplicates, how the queries were written), and which of your explanations did you test and which are guesses?
 Say what 20 queries on one side and your gold-set size on the other cannot support.
 
-TODO: write the cross-corpus comparison.
+Side by side, copied from the shared practice tables in section 1 (20 queries, 2,484 documents) and the own-corpus tables in section 4 (55 queries, 209 documents).
+
+| System | Shared Recall@10 | Own Recall@10 | Shared MRR@10 | Own MRR@10 | Shared nDCG@10 | Own nDCG@10 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| bm25 | 0.625 | 0.900 | 0.507 | 0.744 | 0.518 | 0.774 |
+| dense | 0.558 | 0.923 | 0.562 | 0.791 | 0.480 | 0.785 |
+| hybrid | 0.592 | 0.947 | 0.471 | 0.820 | 0.444 | 0.814 |
+| rerank | 0.758 | 0.954 | 0.800 | 0.885 | 0.763 | 0.861 |
+
+MRR@10 differences between systems, each with its paired 95% interval and minimum detectable difference (MDD):
+
+| Comparison | Shared difference | Shared interval | Shared MDD | Shared reading | Own difference | Own interval | Own MDD | Own reading |
+| --- | ---: | ---: | ---: | --- | ---: | ---: | ---: | --- |
+| dense minus bm25 | +0.055 | [-0.225, +0.343] | 0.412 | not distinguishable | +0.047 | [-0.061, +0.156] | 0.158 | not distinguishable |
+| hybrid minus bm25 | -0.036 | [-0.178, +0.084] | 0.193 | not distinguishable | +0.077 | [+0.012, +0.142] | 0.094 | hybrid higher |
+| hybrid minus dense | -0.091 | [-0.305, +0.110] | 0.300 | not distinguishable | +0.030 | [-0.046, +0.102] | 0.108 | not distinguishable |
+| rerank minus bm25 | +0.293 | [+0.043, +0.533] | 0.353 | rerank higher | +0.141 | [+0.039, +0.246] | 0.149 | rerank higher |
+| rerank minus dense | +0.237 | [+0.083, +0.408] | 0.239 | rerank higher | +0.094 | [-0.009, +0.195] | 0.144 | not distinguishable |
+| rerank minus hybrid | +0.329 | [+0.164, +0.504] | 0.246 | rerank higher | +0.065 | [-0.026, +0.158] | 0.130 | not distinguishable |
+
+The winner did not change however the results in my corpus were less convincing. Rerank did perform the highest on point score, but the confidence intervals were not enough to make that claim over any of the models other than bm25. Document length can be seen as a large contributor for rerank not being able to clearly distinguish itself as the 6,000 character limit was seen to lead to valid passages being pushed down in the rankings. The vocabulary and identifiers for my corpus can be tied to the higher performance of bm25 on paraphrase queries compared to the paraphrase queries of the shared corpus as the narrow vocabulary of the hyper-specific papers was more likely to still be able to point in the right direction even with a paraphrased query. My corpus only saw a couple potential examples of near duplicates between sources, however it was likely to find multiple candidates within a single source and struggle ranking them. For how the queries were written, shared queries came from the course and my set had 10 hand written and 45 claude written queries, both claude and hand queries with a content-word overlap of around 0.82. For corpus size my corpus was much smaller meaning a top 10 covers a larger share of the corpus by default, inflating recall scores. Passage lengths effect was tested through ad hoc 8-query trials of a 12,000 character limit which supported the claims and improved rerank on those failing cases, claims on vocabulary and identifiers as well as near duplicates are untested and made based on understanding of the systems and reasoning, for corpus size and how queries were written they are backed up by gathered statistics but not rigourously tested. With only 20 queries on one side and 55 on the other leaves an MDD of 0.246 and 0.13 respectively, gaps smaller than these are invisible on their respective sides. Additionally with limited queries, the query-per-class numbers are low making claims based on the class of query weaker.
 
 ---
 
