@@ -346,7 +346,7 @@ What did you change, what happened, and does the interval support the claim you 
 If the result is not distinguishable, say what size of effect your gold set could have seen.
 Read the queries at the top of each list in the second table, and say whether your change explains them.
 
-TODO: write the ablation: the one change, the hypothesis, the result and the claim.
+The change made was increasing the chunk size from 300 to 600 words and the overlap from 50 to 100, everything else was held constant, there is a truncation at 512 tokens which may prevent it from getting a full 600 word chunk. The result did not support my hypothesis, I expected an increase in performance but the observed result was a decrease in point score from 0.791 to 0.744 a difference of -0.047 which is not enough to be a distinguishable difference, additionally dense was distinguishably higher in Recall and nDCG. With my gold set in order to see an effect the MDD would be 0.087, a true difference larger than about 0.09 would have been detected 80% of the time. By inspecting the table we can see that the change helped on 7 queries but hurt 10 with 38 remaining the same. Top helped example and interpretation: c36 a paraphrase query asking for a list of measurable characteristics, more context means more characteristics this makes sense. Top hurt example and interpretation: h05 asks for a single statistic where additional context could accidentally tie another number to the answer rather than what the user was asking for.
 
 ---
 
