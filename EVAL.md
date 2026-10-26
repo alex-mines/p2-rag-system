@@ -160,7 +160,7 @@ How did you decide that a document is relevant: write your relevance rule in two
 How did you find candidates (the systems' top 10, a keyword search, reading), and did you read every document before you labeled it?
 Your labels are binary (`rel` 1) unless you say otherwise: if you use graded labels, declare the scale here, for example 2 means the document answers the query fully and 1 means it helps.
 
-TODO: describe your gold set and your relevance rule.
+I used 55 queries, 10 hand and 45 claude with the classes being name, substance, and paraphrase. I chose these classes because I wanted to split up the direct references based on if I was referencing for example the name of a river or location vs the substance being considered in that river or location in order to better fit my specific corpus, and then keep paraphrase for comparing bm25 and dense. The relevance rule that I wrote was "the relevant section should give a reader all of the supporting evidence needed to justify the claim made in answer to the question posed. The reader should be able to look at a portion of the text and say yes this connects to my question directly". For my hand written queries I drafted the query to match a specific passage that I found by reading the documents for myself. For the claude queries I had it generate the queries off of a specific passage for the top 1 result, then use all of the systems (without rerank to save tokens) to generate other candidates, then go in and find supporting evidence and select the best options from those candidates which I then reviewed and approved or modified. Not every document was read before labeling, only those used for the top result of the hand queries. My set was on a binary scale for all 113 judgements.
 
 ---
 
