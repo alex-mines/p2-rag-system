@@ -537,7 +537,7 @@ Each repeat answers the same questions, so the repeats are not independent trial
 Does the reranker's gain over its first stage survive the run-to-run variation?
 Write what the spread is, how it compares with the gain, and what the Wilson intervals on the verified share and the declined share say about 8 and 4 questions.
 
-598E: write the repeats result here.
+Overall the reranker's gain over its first stage did survive the run-to-run variation. For the spread there was very little variation observed, for rerank the observed spread for each stat was Recall@10 0.000, MRR@10 0.000, nDCG@10 0.003, showing the rank of the first relevant document never changed, hybrid had the same counts on all three runs. These results were also reflected in the gain over hybrid where run to run the gain stayed virtually the same, minus one small fluctuation from +0.314 to +0.311 on nDCG@10. The Wilson intervals were identical across all three hybrid runs with 7 of 8 verified and 4 of 4 declined, definitionally Wilson interval does not collapse to zero width at 100% for a small count and this can be seen in the interval results in the table above. What this gives us is that the true rate for verified could be anywhere from 53% to 98% and the declined could be from 51% to 100%.
 
 ### The pre-registered claim
 
