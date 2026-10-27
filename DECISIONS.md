@@ -57,7 +57,7 @@ What did you do instead?
 If it genuinely never happened, say so plainly, and then say what you would have had to check in order to notice.
 Being honest here costs you far less than a story you cannot defend when you record your video.
 
-TODO: your answer to prompt 3.
+One step where I kept some oversight on the agent was during the drafting of the claude written queries when claude was identifying the best matches for each query. For the most part claude did well identifying matches however one example where I had to override claude was with the following query. The original query read "When were the monitoring wells on the east side of the Uncompahgre River built?", however upon reviewing the evidence the wells were built in two phases as two separate times. Leaving the query as is was vague and did not have a clear right answer, simply updating the phrasing to say completed narrowed the scope of the question so that the intended section is the one that quotes well completion rather than construction phases.
 
 ---
 
@@ -69,7 +69,7 @@ It could be a mean over a small query class, a difference whose interval include
 What would have to be true for you to trust it?
 Did you do anything to test it, and what did that show?
 
-TODO: your answer to prompt 4.
+The number I don't trust is the number for comparing the scores between the Claude queries and the hand written queries to determine if the model-written queries favor key word search due to their construction method. The most useful single number for this is in column Claude minus hand in the MRR@10 row since this stat is what was used for comparisons across the project. The score was +0.038 with bm25 trails dense by slightly less on the claude queries but not enough to be distinguishable. It is hard to trust this number because of how few hand written queries there are relative to the number of claude queries, which leaves us with a very wide interval relative to the score. In order to trust it better having an equal number of claude and hand queries would help to ensure a more fair reading. I was not able to test this as I didn't have time to write and run more hand queries but this would be a good future step.
 
 ---
 
@@ -80,4 +80,4 @@ One thing in your system, your corpus or your gold set that is not right, not fi
 What would you do next, and how would you find out whether it matters?
 Name the file, the query or the document where someone could look.
 
-TODO: your answer to prompt 5.
+The biggest piece that I would change or work on next would be something I have mentioned several times which is raising the 6,000 character limit for rerank. Having this limit prevented rerank from having the full context when ranking selections which hurt on queries where the most relevant data falls beyond this limit in the document, this can be seen by inspecting OWN_PASSAGE_CHARS in p2/retrievers/rerank.py as well as the results in the EVAL.md section 6 table. One interesting way to address this would be rather than just raw raising the limit to keep the limit the same but instead dynamically give rerank the 6,000 character chunk that was deemed most relevant by the other systems. A quick test to see improvement would be to run the change on the 8 queries whose answers sit beyond character 6,000 and check that rank improves for rerank. Finally in order to validate whether this change had the result I expected I would need to rerun all 55 queries and then recompare rerank and hybrid to see if this was able to improve rerank enough to have a distinguishable improvement. A potential risk of this is that if hybrid's chunk that was determined to be the most relevant is not the correct chunk the same issue would repeat and rerank would likely not rank this highly.
